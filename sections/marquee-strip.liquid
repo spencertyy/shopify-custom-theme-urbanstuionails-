@@ -1,0 +1,128 @@
+{%- style -%}
+  .marquee-strip-{{ section.id }} {
+    background: {{ section.settings.background_color }};
+    color: {{ section.settings.text_color }};
+    overflow: hidden;
+    padding: {{ section.settings.padding_vertical }}px 0;
+  }
+
+  .marquee-strip__track {
+    display: flex;
+    gap: {{ section.settings.item_gap }}px;
+    white-space: nowrap;
+    width: max-content;
+    animation: marquee-scroll {{ section.settings.speed }}s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-strip__track { animation: none; }
+  }
+
+  .marquee-strip__item {
+    font-family: var(--font-heading-family);
+    font-weight: 800;
+    font-size: {{ section.settings.font_size }}px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .marquee-strip__sep {
+    opacity: 0.45;
+  }
+
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+{%- endstyle -%}
+
+<div class="marquee-strip-{{ section.id }}" aria-hidden="true">
+  <div class="marquee-strip__track">
+    {%- for i in (1..12) -%}
+      <span class="marquee-strip__item">{{ section.settings.text }}</span>
+      <span class="marquee-strip__item marquee-strip__sep">{{ section.settings.separator }}</span>
+    {%- endfor -%}
+    {%- for i in (1..12) -%}
+      <span class="marquee-strip__item">{{ section.settings.text }}</span>
+      <span class="marquee-strip__item marquee-strip__sep">{{ section.settings.separator }}</span>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee Strip",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Marquee text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "text",
+      "id": "separator",
+      "label": "Separator",
+      "default": "·"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 16,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Font size",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding (top/bottom)",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "min": 16,
+      "max": 128,
+      "step": 8,
+      "unit": "px",
+      "label": "Item gap",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 6,
+      "max": 60,
+      "step": 2,
+      "label": "Scroll speed (seconds/cycle)",
+      "default": 18
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee Strip"
+    }
+  ]
+}
+{% endschema %}

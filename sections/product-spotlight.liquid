@@ -1,0 +1,154 @@
+<link rel="stylesheet" href="{{ 'component-product-spotlight.css' | asset_url }}" media="print" onload="this.media='all'">
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="product-spotlight section-{{ section.id }}-padding page-width">
+  <div class="product-spotlight__grid">
+
+    {%- comment -%} Left: lifestyle image {%- endcomment -%}
+    <div class="product-spotlight__lifestyle">
+      {%- if section.settings.lifestyle_image != blank -%}
+        {{
+          section.settings.lifestyle_image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'lazy',
+            widths: '600, 800, 1000, 1200',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            class: 'product-spotlight__lifestyle-img',
+            alt: section.settings.lifestyle_image.alt
+        }}
+      {%- elsif section.settings.product != blank and section.settings.product.featured_media -%}
+        {{
+          section.settings.product.featured_media
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'lazy',
+            widths: '600, 800, 1000, 1200',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            class: 'product-spotlight__lifestyle-img',
+            alt: section.settings.product.title
+        }}
+      {%- else -%}
+        <div class="product-spotlight__lifestyle-placeholder"></div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right: product card {%- endcomment -%}
+    <div class="product-spotlight__card" style="background: {{ section.settings.card_bg_color }}">
+      {%- if section.settings.product != blank -%}
+        <div class="product-spotlight__card-header">
+          <span class="product-spotlight__card-title">{{ section.settings.product.title | upcase }}</span>
+          <span class="product-spotlight__card-price">{{ section.settings.product.price | money }}</span>
+        </div>
+
+        {%- if section.settings.product.images.size > 1 -%}
+          <div class="product-spotlight__card-img">
+            {{
+              section.settings.product.images[1]
+              | image_url: width: 800
+              | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 800',
+                sizes: '(min-width: 990px) 30vw, 80vw',
+                alt: section.settings.product.title
+            }}
+          </div>
+        {%- elsif section.settings.product.featured_media -%}
+          <div class="product-spotlight__card-img">
+            {{
+              section.settings.product.featured_media
+              | image_url: width: 800
+              | image_tag:
+                loading: 'lazy',
+                widths: '400, 600, 800',
+                sizes: '(min-width: 990px) 30vw, 80vw',
+                alt: section.settings.product.title
+            }}
+          </div>
+        {%- endif -%}
+
+        <div class="product-spotlight__card-actions">
+          <a href="{{ section.settings.product.url }}" class="product-spotlight__btn">
+            {{ section.settings.cta_label | default: 'SHOP NOW' }}
+          </a>
+        </div>
+      {%- else -%}
+        <div class="product-spotlight__card-header">
+          <span class="product-spotlight__card-title">{{ section.settings.placeholder_title | default: 'CRYSTAL QUEEN PRESS-ON NAILS' }}</span>
+          <span class="product-spotlight__card-price">$45.00</span>
+        </div>
+        <div class="product-spotlight__card-img product-spotlight__card-img--placeholder"></div>
+        <div class="product-spotlight__card-actions">
+          <a href="{{ section.settings.cta_url | default: '#' }}" class="product-spotlight__btn">
+            {{ section.settings.cta_label | default: 'SHOP NOW' }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Spotlight",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "image_picker",
+      "id": "lifestyle_image",
+      "label": "Lifestyle image (left column)"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_title",
+      "label": "Fallback product title",
+      "default": "CRYSTAL QUEEN PRESS-ON NAILS"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA button text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA URL (when no product selected)"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Product card background color",
+      "default": "#c9c5c0"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    { "name": "Product Spotlight" }
+  ]
+}
+{% endschema %}

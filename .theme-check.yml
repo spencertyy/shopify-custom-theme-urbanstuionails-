@@ -1,0 +1,26 @@
+ignore:
+  - node_modules/
+
+ChecksExclude:
+  UndefinedObject:
+    enabled: false
+  MissingTemplate:
+    enabled: false
+
+Checks:
+  LiquidHTMLSyntaxError:
+    enabled: true
+  ImgLazyLoading:
+    enabled: true
+  ImgWidthAndHeight:
+    enabled: true
+  DeprecatedFilter:
+    enabled: true
+  DeprecatedTag:
+    enabled: true
+  MissingRequiredTemplateFiles:
+    enabled: true
+  HtmlParsingError:
+    enabled: true
+  SpaceInsideBraces:
+    enabled: false

@@ -1,0 +1,227 @@
+{{ 'component-gift-landing.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+
+<div class="gift-landing section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+
+    {%- if section.settings.heading != blank -%}
+      <div class="gift-landing__hero">
+        <h1 class="gift-landing__title">{{ section.settings.heading }}</h1>
+        {%- if section.settings.subheading != blank -%}
+          <p class="gift-landing__sub">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="gift-landing__grid">
+
+      {%- comment -%} Gift Card product {%- endcomment -%}
+      {%- if section.settings.gift_card_product != blank -%}
+        <div class="gift-landing__card gift-landing__card--featured">
+          <div class="gift-landing__card-img">
+            {%- if section.settings.gift_card_product.featured_media -%}
+              {{
+                section.settings.gift_card_product.featured_media
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '400,600,800',
+                  sizes: '(min-width: 990px) 40vw, 100vw',
+                  alt: section.settings.gift_card_product.title
+              }}
+            {%- endif -%}
+          </div>
+          <div class="gift-landing__card-info">
+            <span class="gift-landing__tag">E-GIFT CARD</span>
+            <h2 class="gift-landing__card-title">{{ section.settings.gift_card_product.title }}</h2>
+            <p class="gift-landing__card-price">
+              {{- section.settings.gift_card_product.price_min | money -}}
+              {%- if section.settings.gift_card_product.price_min != section.settings.gift_card_product.price_max -%}
+                &nbsp;–&nbsp;{{ section.settings.gift_card_product.price_max | money }}
+              {%- endif -%}
+            </p>
+            <a href="{{ section.settings.gift_card_product.url }}" class="gift-landing__btn button">
+              {{ 'gift.buy_gift_card' | t | default: 'Buy Gift Card' }}
+            </a>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Top gift set products {%- endcomment -%}
+      {%- if section.settings.gift_collection != blank -%}
+        {%- for product in section.settings.gift_collection.products limit: 3 -%}
+          <div class="gift-landing__card">
+            <div class="gift-landing__card-img">
+              {%- if product.featured_media -%}
+                {{
+                  product.featured_media
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '300,450,600',
+                    sizes: '(min-width: 990px) 25vw, 50vw',
+                    alt: product.title
+                }}
+              {%- endif -%}
+            </div>
+            <div class="gift-landing__card-info">
+              <h3 class="gift-landing__card-title">{{ product.title }}</h3>
+              <p class="gift-landing__card-price">{{ product.price | money }}</p>
+              <a href="{{ product.url }}" class="gift-landing__btn gift-landing__btn--outline">Shop Now</a>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+
+    </div>
+
+    {%- comment -%} Gift wrap add-on {%- endcomment -%}
+    {%- if section.settings.show_gift_wrap -%}
+      <div class="gift-landing__wrap-section">
+        <h2 class="gift-landing__wrap-title">{{ section.settings.gift_wrap_heading | default: 'Add Gift Wrapping' }}</h2>
+        <p class="gift-landing__wrap-desc">{{ section.settings.gift_wrap_description }}</p>
+        <div class="gift-landing__wrap-toggle">
+          <label class="gift-landing__checkbox-label">
+            <input
+              type="checkbox"
+              id="gift-wrap-toggle"
+              data-gift-wrap-price="{{ section.settings.gift_wrap_price | times: 100 | round }}"
+              data-gift-wrap-label="{{ section.settings.gift_wrap_item_label | default: 'Gift Wrapping' }}"
+            >
+            <span>{{ section.settings.gift_wrap_item_label | default: 'Gift Wrapping' }} — {{ section.settings.gift_wrap_price | money }}</span>
+          </label>
+        </div>
+
+        {%- comment -%} Recipient e-card form {%- endcomment -%}
+        <div class="gift-landing__ecard" id="gift-ecard-form" hidden>
+          <h3>{{ section.settings.ecard_heading | default: 'Personalize your gift' }}</h3>
+          <div class="gift-landing__ecard-fields">
+            <label>
+              <span>Recipient name</span>
+              <input type="text" name="properties[Recipient Name]" placeholder="e.g. Sarah">
+            </label>
+            <label>
+              <span>Your message</span>
+              <textarea name="properties[Gift Message]" rows="3" placeholder="Write a personal note…"></textarea>
+            </label>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var toggle = document.getElementById('gift-wrap-toggle');
+  var ecardForm = document.getElementById('gift-ecard-form');
+  if (!toggle) return;
+  toggle.addEventListener('change', function(){
+    if (ecardForm) ecardForm.hidden = !this.checked;
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Gift Landing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Give the Gift of Beautiful Nails"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Gift cards, curated sets, and thoughtful wrapping — all in one place."
+    },
+    {
+      "type": "product",
+      "id": "gift_card_product",
+      "label": "Gift card product"
+    },
+    {
+      "type": "collection",
+      "id": "gift_collection",
+      "label": "Gift sets collection (shows top 3)"
+    },
+    {
+      "type": "header",
+      "content": "Gift Wrapping Add-on"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_wrap",
+      "label": "Show gift wrap section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "gift_wrap_heading",
+      "label": "Gift wrap section heading",
+      "default": "Add Gift Wrapping"
+    },
+    {
+      "type": "textarea",
+      "id": "gift_wrap_description",
+      "label": "Gift wrap description",
+      "default": "Each order can be beautifully wrapped with tissue paper, a ribbon, and a hand-stamped card."
+    },
+    {
+      "type": "text",
+      "id": "gift_wrap_item_label",
+      "label": "Cart line item label",
+      "default": "Gift Wrapping"
+    },
+    {
+      "type": "number",
+      "id": "gift_wrap_price",
+      "label": "Gift wrap price (in dollars)",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "ecard_heading",
+      "label": "E-card section heading",
+      "default": "Personalize your gift"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 60
+    }
+  ],
+  "presets": [
+    { "name": "Gift Landing" }
+  ]
+}
+{% endschema %}

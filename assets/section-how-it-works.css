@@ -1,0 +1,89 @@
+.how-it-works { text-align: center; }
+
+.how-it-works__heading {
+  margin-bottom: 4rem;
+}
+
+.how-it-works__steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.how-it-works__step {
+  flex: 1;
+  min-width: 18rem;
+  max-width: 28rem;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.how-it-works__connector {
+  display: flex;
+  align-items: center;
+  padding-top: 5rem;
+  font-size: 2.4rem;
+  color: rgba(var(--color-foreground), 0.3);
+  flex-shrink: 0;
+}
+
+.how-it-works__step-number {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--color-foreground), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.6rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.how-it-works__icon {
+  width: 6.4rem;
+  height: 6.4rem;
+  margin-bottom: 1.6rem;
+}
+
+.how-it-works__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.how-it-works__icon-placeholder {
+  width: 6.4rem;
+  height: 6.4rem;
+  margin-bottom: 1.6rem;
+  color: rgba(var(--color-foreground), 0.5);
+}
+
+.how-it-works__icon-placeholder svg {
+  width: 100%;
+  height: 100%;
+}
+
+.how-it-works__step-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 0.8rem;
+}
+
+.how-it-works__step-desc {
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: rgba(var(--color-foreground), 0.7);
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .how-it-works__steps { flex-direction: column; align-items: center; gap: 3.2rem; }
+  .how-it-works__connector { display: none; }
+  .how-it-works__step { max-width: 100%; }
+}

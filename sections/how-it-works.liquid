@@ -1,0 +1,154 @@
+{{ 'section-how-it-works.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="how-it-works color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="how-it-works__heading {{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="how-it-works__steps">
+      {%- for block in section.blocks -%}
+        <div class="how-it-works__step" {{ block.shopify_attributes }}>
+          <div class="how-it-works__step-number">
+            <span>{{ forloop.index }}</span>
+          </div>
+          {%- if block.settings.icon != blank -%}
+            <div class="how-it-works__icon">
+              {{
+                block.settings.icon
+                | image_url: width: 120
+                | image_tag: loading: 'lazy', alt: block.settings.title
+              }}
+            </div>
+          {%- else -%}
+            <div class="how-it-works__icon-placeholder">
+              {%- case forloop.index -%}
+                {%- when 1 -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M36 8H12a2 2 0 0 0-2 2v28a2 2 0 0 0 2 2h24a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2z"/><path d="M16 22l6 6 10-12"/></svg>
+                {%- when 2 -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M24 14v10l6 4"/></svg>
+                {%- when 3 -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 36c0-6.6 5.4-12 12-12s12 5.4 12 12"/><circle cx="24" cy="17" r="7"/><path d="M8 40h32"/></svg>
+                {%- else -%}
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M24 16v8l5 5"/></svg>
+              {%- endcase -%}
+            </div>
+          {%- endif -%}
+          <h3 class="how-it-works__step-title">{{ block.settings.title }}</h3>
+          {%- if block.settings.description != blank -%}
+            <p class="how-it-works__step-desc">{{ block.settings.description }}</p>
+          {%- endif -%}
+        </div>
+        {%- unless forloop.last -%}
+          <div class="how-it-works__connector" aria-hidden="true">→</div>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "How It Works",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:sections.all.heading.label",
+      "default": "How It Works"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:sections.all.heading_size.label",
+      "options": [
+        { "value": "h2", "label": "t:sections.all.heading_size.options__1.label" },
+        { "value": "h1", "label": "t:sections.all.heading_size.options__2.label" },
+        { "value": "h0", "label": "t:sections.all.heading_size.options__3.label" }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "options": [
+        { "value": "scheme-1", "label": "t:sections.all.colors.scheme_1_label" },
+        { "value": "scheme-2", "label": "t:sections.all.colors.scheme_2_label" },
+        { "value": "scheme-3", "label": "t:sections.all.colors.scheme_3_label" },
+        { "value": "scheme-4", "label": "t:sections.all.colors.scheme_4_label" },
+        { "value": "scheme-5", "label": "t:sections.all.colors.scheme_5_label" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Step Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Short description of this step."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "How It Works",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Apply", "description": "Prep your nails, choose your size, and press on — done in under 5 minutes." } },
+        { "type": "step", "settings": { "title": "Wear", "description": "Glue tabs last 3–5 days. Nail glue lasts up to 14 days of wear." } },
+        { "type": "step", "settings": { "title": "Reuse", "description": "Gently remove, clean, and store. Each set can be worn multiple times." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

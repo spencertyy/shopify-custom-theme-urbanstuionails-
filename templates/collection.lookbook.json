@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "banner": {
+      "type": "main-collection-banner",
+      "settings": {}
+    },
+    "lookbook": {
+      "type": "lookbook-grid",
+      "settings": {
+        "columns_desktop": 3,
+        "color_scheme": "scheme-1",
+        "padding_top": 0,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": ["banner", "lookbook"]
+}

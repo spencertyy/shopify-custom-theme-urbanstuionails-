@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "gift": {
+      "type": "gift-landing",
+      "settings": {
+        "heading": "Give the Gift of Beautiful Nails",
+        "subheading": "Gift cards, curated sets, and thoughtful wrapping — all in one place.",
+        "show_gift_wrap": true,
+        "gift_wrap_heading": "Add Gift Wrapping",
+        "gift_wrap_description": "Each order can be beautifully wrapped with tissue paper, a ribbon, and a hand-stamped card.",
+        "gift_wrap_item_label": "Gift Wrapping",
+        "gift_wrap_price": 5,
+        "ecard_heading": "Personalize your gift",
+        "color_scheme": "scheme-1",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": ["gift"]
+}

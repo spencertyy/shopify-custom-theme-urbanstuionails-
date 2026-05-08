@@ -1,0 +1,15 @@
+# Shopify CLI
+.shopify/
+
+# Local IDE / tool config
+.claude/
+.DS_Store
+*.log
+
+# Live store data — contains real store config, social links, product refs
+# Use config/settings_data.example.json as reference instead
+config/settings_data.json
+
+# Private notes — store credentials, commands, internal docs
+PRIVATE_NOTES.md
+OPTIMIZATION_STATUS.md

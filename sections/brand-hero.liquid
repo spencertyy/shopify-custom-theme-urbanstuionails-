@@ -1,0 +1,203 @@
+{%- style -%}
+  .brand-hero-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    padding: {{ section.settings.padding_top }}px 0 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-hero-{{ section.id }}__inner {
+    max-width: var(--page-width, 1400px);
+    margin: 0 auto;
+    padding: 0 calc(5.5rem / var(--font-body-scale)) {{ section.settings.padding_bottom }}px;
+  }
+
+  .brand-hero-{{ section.id }}__body {
+    font-size: clamp(1.3rem, 1.5vw, 1.6rem);
+    line-height: 1.55;
+    max-width: 34ch;
+    color: {{ section.settings.text_color }};
+    margin: 4rem 0 2.4rem;
+  }
+
+  .brand-hero-{{ section.id }}__cta {
+    display: inline-block;
+    padding: 1.1rem 2.6rem;
+    border: 1.5px solid {{ section.settings.text_color }};
+    color: {{ section.settings.text_color }};
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .brand-hero-{{ section.id }}__cta:hover {
+    background: {{ section.settings.text_color }};
+    color: {{ section.settings.bg_color }};
+  }
+
+  .brand-hero-{{ section.id }}__wordmark {
+    display: block;
+    width: {{ section.settings.wordmark_width }}px;
+    max-width: 100%;
+    height: auto;
+    margin: 0.8rem 0 -0.4rem;
+    color: {{ section.settings.text_color }};
+  }
+
+  .brand-hero-{{ section.id }}__wordmark-full {
+    display: block;
+    width: 100%;
+    height: clamp(4rem, 11vw, 13rem);
+    color: {{ section.settings.text_color }};
+    margin-top: 2rem;
+  }
+{%- endstyle -%}
+
+<div class="brand-hero-{{ section.id }}">
+  <div class="brand-hero-{{ section.id }}__inner">
+
+    {%- if section.settings.body_text != blank -%}
+      <p class="brand-hero-{{ section.id }}__body">{{ section.settings.body_text }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.cta_label != blank -%}
+      <a
+        href="{{ section.settings.cta_url | default: '/collections/all' }}"
+        class="brand-hero-{{ section.id }}__cta"
+      >
+        {{- section.settings.cta_label -}}
+      </a>
+    {%- endif -%}
+
+    {%- if section.settings.show_wordmark -%}
+      {%- if section.settings.wordmark_position == 'inline' -%}
+        <svg
+          class="brand-hero-{{ section.id }}__wordmark"
+          viewBox="0 0 1200 150"
+          preserveAspectRatio="xMinYMid meet"
+          aria-label="{{ shop.name }}"
+        >
+          <text
+            x="10" y="130"
+            font-size="170"
+            fill="currentColor"
+            textLength="{{ section.settings.wordmark_width | times: 1.9 | round }}"
+            lengthAdjust="spacingAndGlyphs"
+            style="font-weight:900;letter-spacing:-2px;font-family:inherit"
+          >{{ shop.name }}</text>
+        </svg>
+      {%- else -%}
+        <svg
+          class="brand-hero-{{ section.id }}__wordmark-full"
+          viewBox="0 0 1200 150"
+          preserveAspectRatio="xMidYMid meet"
+          aria-label="{{ shop.name }}"
+        >
+          <text
+            x="600" y="130"
+            text-anchor="middle"
+            font-size="170"
+            fill="currentColor"
+            textLength="1180"
+            lengthAdjust="spacingAndGlyphs"
+            style="font-weight:900;letter-spacing:-2px;font-family:inherit"
+          >{{ shop.name }}</text>
+        </svg>
+      {%- endif -%}
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Hero",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#f5b1d5"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0e0e0e"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "Salon-quality press-on nails, handcrafted in minutes. Reusable, flawless, and made for the woman who never slows down — wear them to work, to dinner, to anywhere."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA button label",
+      "default": "SHOP ALL"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Show brand wordmark",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "wordmark_position",
+      "label": "Wordmark size",
+      "options": [
+        { "value": "inline", "label": "Inline (500px)" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "range",
+      "id": "wordmark_width",
+      "min": 200,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Wordmark width (inline only)",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 120, "step": 4, "unit": "px",
+      "label": "Padding top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 120, "step": 4, "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Hero",
+      "settings": {
+        "bg_color": "#f5b1d5",
+        "body_text": "Salon-quality press-on nails, handcrafted in minutes. Reusable, flawless, and made for the woman who never slows down — wear them to work, to dinner, to anywhere.",
+        "cta_label": "SHOP ALL",
+        "show_wordmark": true,
+        "wordmark_position": "inline"
+      }
+    }
+  ]
+}
+{% endschema %}

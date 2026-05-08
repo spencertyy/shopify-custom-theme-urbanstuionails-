@@ -1,0 +1,174 @@
+{% comment %}
+  Renders product variant-picker
+
+  Accepts:
+  - product: {Object} product object.
+  - block: {Object} passing the block information.
+  - product_form_id: {String} Id of the product form to which the variant picker is associated.
+  Usage:
+  {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+{% endcomment %}
+{%- unless product.has_only_default_variant -%}
+  <variant-selects
+    id="variant-selects-{{ section.id }}"
+    data-section="{{ section.id }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign swatch_count = option.values | map: 'swatch' | compact | size
+        assign picker_type = block.settings.picker_type
+        assign option_name_lower = option.name | downcase
+
+        if swatch_count > 0 and block.settings.swatch_shape != 'none'
+          if block.settings.picker_type == 'dropdown'
+            assign picker_type = 'swatch_dropdown'
+          else
+            assign picker_type = 'swatch'
+          endif
+        endif
+
+        if option_name_lower == 'length' or option_name_lower == 'shape' or option_name_lower == 'size' or option_name_lower == 'style'
+          assign is_nail_option = true
+        else
+          assign is_nail_option = false
+        endif
+      -%}
+      {%- if picker_type == 'swatch' -%}
+        <fieldset class="js product-form__input product-form__input--swatch{% if option_name_lower contains 'shape' %} product-form__input--nail-shape-swatch{% endif %}">
+          <legend class="form__label">
+            {{ option.name }}:
+            <span data-selected-value>
+              {{- option.selected_value -}}
+            </span>
+          </legend>
+          {%- if option_name_lower contains 'shape' -%}
+            {%- liquid
+              assign product_form_id_svgswatch = 'product-form-' | append: section.id
+            -%}
+            {%- for value in option.values -%}
+              {%- liquid
+                assign svg_input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index0
+                assign svg_input_name = option.name | append: '-' | append: option.position
+                assign svg_option_disabled = true
+                if value.available
+                  assign svg_option_disabled = false
+                endif
+                assign svg_value_lower = value | downcase
+              -%}
+              <input
+                type="radio"
+                id="{{ svg_input_id }}"
+                name="{{ svg_input_name }}"
+                value="{{ value | escape }}"
+                form="{{ product_form_id_svgswatch }}"
+                class="swatch-input__input visually-hidden{% if svg_option_disabled %} disabled{% endif %}"
+                {% if value.selected %}checked{% endif %}
+                data-product-url="{{ value.product_url }}"
+                data-option-value-id="{{ value.id }}"
+              >
+              <label for="{{ svg_input_id }}" class="swatch-input__label nail-shape-swatch-label{% if svg_option_disabled %} swatch--disabled{% endif %}" title="{{ value | escape }}">
+                {%- case svg_value_lower -%}
+                  {%- when 'almond' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <path d="M15 38 C8 32, 4 22, 4 14 C4 7, 9 2, 15 2 C21 2, 26 7, 26 14 C26 22, 22 32, 15 38 Z"/>
+                    </svg>
+                  {%- when 'coffin' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <path d="M8 2 H22 V32 H8 Z"/>
+                      <line x1="8" y1="32" x2="22" y2="32"/>
+                    </svg>
+                  {%- when 'stiletto' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <path d="M8 2 H22 C22 2, 20 16, 15 38 C10 16, 8 2, 8 2 Z"/>
+                    </svg>
+                  {%- when 'square' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <rect x="5" y="2" width="20" height="36" rx="0" ry="0"/>
+                    </svg>
+                  {%- when 'round' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <path d="M5 2 H25 V28 Q25 38, 15 38 Q5 38, 5 28 Z"/>
+                    </svg>
+                  {%- when 'oval' -%}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" viewBox="0 0 30 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                      <ellipse cx="15" cy="20" rx="10" ry="18"/>
+                    </svg>
+                  {%- else -%}
+                    <span class="nail-shape-swatch-text">{{ value }}</span>
+                {%- endcase -%}
+                <span class="visually-hidden">{{ value }}</span>
+                {%- if svg_option_disabled -%}
+                  <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+                {%- endif -%}
+              </label>
+            {%- endfor -%}
+          {%- else -%}
+            {% render 'product-variant-options',
+              product: product,
+              option: option,
+              block: block,
+              picker_type: picker_type
+            %}
+          {%- endif -%}
+        </fieldset>
+      {%- elsif picker_type == 'button' -%}
+        <fieldset class="js product-form__input product-form__input--pill">
+          <legend class="form__label">{{ option.name }}</legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: picker_type
+          %}
+        </fieldset>
+      {%- elsif is_nail_option -%}
+        {%- comment -%} Pill selector for nail size/shape/length/style options {%- endcomment -%}
+        <fieldset class="js product-form__input product-form__input--pill product-form__input--nail-shape">
+          <legend class="form__label">
+            {{ option.name }}:
+            <span data-selected-value>{{- option.selected_value -}}</span>
+          </legend>
+          {% render 'product-variant-options',
+            product: product,
+            option: option,
+            block: block,
+            picker_type: 'button'
+          %}
+        </fieldset>
+      {%- else -%}
+        <div class="product-form__input product-form__input--dropdown">
+          <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+            {{ option.name }}
+          </label>
+          <div class="select">
+            {%- if picker_type == 'swatch_dropdown' -%}
+              <span
+                data-selected-value
+                class="dropdown-swatch"
+              >
+                {% render 'swatch', swatch: option.selected_value.swatch, shape: block.settings.swatch_shape %}
+              </span>
+            {%- endif -%}
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              class="select__select"
+              name="options[{{ option.name | escape }}]"
+              form="{{ product_form_id }}"
+            >
+              {% render 'product-variant-options',
+                product: product,
+                option: option,
+                block: block,
+                picker_type: picker_type
+              %}
+            </select>
+            {% render 'icon-caret' %}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <script type="application/json" data-selected-variant>{{ product.selected_or_first_available_variant | json }}</script>
+  </variant-selects>
+{%- endunless -%}
