@@ -1,4 +1,4 @@
-# UrbanStudio Nails — Shopify Theme 2026
+# UrbanStudio Nails — Shopify Theme 
 
 A fully custom Shopify storefront for **UrbanStudio Nails**, a handcrafted press-on nail brand. Built on Dawn v15.0.0 with extensive customization across sections, snippets, and theme architecture.
 
